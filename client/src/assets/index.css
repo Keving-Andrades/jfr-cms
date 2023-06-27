@@ -107,7 +107,12 @@ p {
 	justify-content: space-between;
 }
 
-html, body {
+html {
+	height: 100%;
+	overflow-x: hidden;
+}
+
+body {
 	display: flex;
 	flex-direction: column;
 	width: 100vw;
@@ -115,7 +120,6 @@ html, body {
 	font-size: 1rem;
 	color: var(--grey);
 	background-color: var(--white);
-	overflow-x: hidden;
 }
 
 .loader {
