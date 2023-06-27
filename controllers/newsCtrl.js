@@ -45,7 +45,7 @@ const newsCtrl = {
 			const user = await User.findById(req.user.id);
 			const { role, _id } = user;
 
-			const news = await News.find(role === 1 ? undefined : { code: user.code } ).select("-updatedAt -__v");
+			const news = await News.find(role !== 2 ? undefined : { code: user.code } ).select("-updatedAt -__v");
 
 			if (news.length < 1) return res.json({
 				status: 400,
@@ -459,7 +459,7 @@ const newsCtrl = {
 		try {
 			const user = await User.findById(req.user.id);
 
-			if (user.role !== 1) return res.json({
+			if (user.role === 2) return res.json({
 				status: 400,
 				success: false,
 				content: "No tienes permitido destacar esta publicación."

@@ -20,8 +20,7 @@ const userSchema = new Schema({
 		required: true
 	},
 	code: {
-		type: String,
-		unique: true
+		type: String
 	},
 	state: {
 		type: Number,

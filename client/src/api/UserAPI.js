@@ -22,7 +22,7 @@ function UserAPI(token, setLoading, setLogged) {
 				};
 
 				setIsLogged(true);
-				if (content.role === 1) setIsAdmin(true);
+				if (content.role !== 2) setIsAdmin(true);
 				setLoading(false);
 				setLogged(true);
 
