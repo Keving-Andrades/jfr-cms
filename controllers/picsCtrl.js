@@ -90,7 +90,8 @@ const picsCtrl = {
 			};
 
 			const picInfo = {
-				by
+				by,
+				code: user.code
 			}
 
 			const { file, metadata: { type } } = req.body;

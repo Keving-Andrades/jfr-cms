@@ -136,7 +136,8 @@ const newsCtrl = {
 				});
 
 				const picInfo = {
-					by
+					by,
+					code: user.code
 				}
 
 				if (title) picInfo.post = { title };
