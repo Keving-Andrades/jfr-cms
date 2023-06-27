@@ -224,7 +224,7 @@ const newsCtrl = {
 
 				const posts = await News.find().sort({ createdAt: -1 });
 
-				await News.findByIdAndUpdate(posts[0]._id, { featured: true });
+				if (posts.length) await News.findByIdAndUpdate(posts[0]._id, { featured: true });
 
 				return res.json({
 					status: 200,
