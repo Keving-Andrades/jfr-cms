@@ -54,7 +54,7 @@ const picsCtrl = {
 		try {
 			const user = await User.findById(req.user.id);
 			const { role } = user;
-			const pics = await Pic.find(role !== 2 ? undefined : { code: user.code } ).select('-updatedAt -__v');
+			const pics = await Pic.find(role !== 2 ? undefined : { code: user.code } ).select('-updatedAt -__v').sort({ createdAt: -1 });
 
 			if (pics.length < 1) {
 				const error = {

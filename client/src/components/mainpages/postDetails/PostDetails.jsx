@@ -38,8 +38,9 @@ const PostDetails = () => {
 	const year = new Date(createdAt).toLocaleString('es-VE', { year: 'numeric' });
 	const mm = `${month[0].toUpperCase()}${month.slice(1)}`;
 	const newDate = `${day} de ${mm} de ${year}`;
-	const [ hh, mn, ss ] = new Date(createdAt).toLocaleTimeString().split(":");
-	const time =  `${hh}:${mn} ${ss.split(' ')[1]}`;
+	const time =  new Date(createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+	.replace("p. m.", "PM")
+	.replace("a. m.", "AM");
 
 	return (
 		<div className='postDetails__container'>

@@ -7,9 +7,10 @@ import { Ring } from '@uiball/loaders';
 
 const Modal = ({ pic, modalTools, confirmModal, delPic, getPics, getNews }) => {
 	const [ expanded, setExpanded ] = modalTools;
-	const [ mm, dd, yyyy ] = new Date(pic.createdAt).toLocaleDateString().split("/");
-	const newDate = `${dd}/${mm < 10 ? `0${mm}` : mm}/${yyyy}`;
-	const time = new Date(pic.createdAt).toLocaleTimeString();
+	const newDate = new Date(pic.createdAt).toLocaleDateString('en-GB', { month: '2-digit',day: '2-digit',year: 'numeric'});
+	const time =  new Date(pic.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+	.replace("p. m.", "PM")
+	.replace("a. m.", "AM");
 	const [ modal, setModal ] = confirmModal;
 
 	const deletePic = id => {
@@ -107,9 +108,9 @@ const ModalUpload = ({ image, setUpload, preview, uploadPic, getPics, getNews, i
 	};
 
 	const acceptHandler = async e => {
-		if (loading) return e.preventDefault();
-
 		setLoading(true);
+
+		if (loading) return e.preventDefault();
 
 		const { success, content } = await uploadPic(image);
 

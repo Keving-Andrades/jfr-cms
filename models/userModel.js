@@ -21,10 +21,6 @@ const userSchema = new Schema({
 	},
 	code: {
 		type: String
-	},
-	state: {
-		type: Number,
-		default: 0
 	}
 }, {
 	timestamps: true

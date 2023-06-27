@@ -47,7 +47,7 @@ const userCtrl = {
 					content: "El código de colaborador es inválido."
 				});
 	
-				const validCollab = await User.findOne({ code, state: 0 });
+				const validCollab = await User.findOne({ code });
 				if (!validCollab) return res.json({
 					status: 400,
 					success: false,
@@ -57,8 +57,7 @@ const userCtrl = {
 				const data = {
 					name,
 					email,
-					password: passwordHash,
-					state: 1
+					password: passwordHash
 				};
 
 				await User.findOneAndUpdate({ code }, data);
@@ -73,8 +72,7 @@ const userCtrl = {
 				name,
 				email,
 				password: passwordHash,
-				role: 1,
-				state: 1
+				role: 1
 			};
 			
 			const newUser = new User(data);
@@ -103,12 +101,6 @@ const userCtrl = {
 			const user = await User.findOne({ email });
 
 			if (!user) return res.json({
-				status: 400,
-				success: false,
-				content: "Datos incorrectos."
-			});
-
-			if (user.state !== 1) return res.json({
 				status: 400,
 				success: false,
 				content: "Datos incorrectos."
@@ -219,39 +211,6 @@ const userCtrl = {
 			return res.json(error);
 		};
 	},
-	confirmPassword: async (req, res) => {
-		try {
-			const user = await User.findById(req.user.id);	
-			if (!user) {
-				const error = {
-					status: 400,
-					success: false,
-					content: "User does not exist."
-				};
-
-				console.error(error);
-				return res.json(error);
-			};
-
-			const { password } = req.body;
-
-			const validPass = await bcrypt.compare(password, user.password);
-			
-			res.json({
-				status: 200,
-				success: true,
-				content: validPass
-			});
-		} catch (err) {
-			const { message } = err;
-			const error = {
-				status: 500,
-				success: false,
-				content: message
-			};
-			return res.json(error);
-		};
-	},
 	addCollab: async (req, res) => {
 		try {
 			let newCode = '';
@@ -293,13 +252,13 @@ const userCtrl = {
 		try {
 			const user = await User.findById(req.user.id);
 
-			if (user.role !== 1) return res.json({
+			if (user.role === 2) return res.json({
 				status: 400,
 				success: false,
 				content: "No tienes permitido acceder a esta ruta"
 			});
 
-			const collabs = await User.find({ role: 2, state: { $in: [ 0, 1 ] } }).select('name code');
+			const collabs = await User.find({ role: 2 }).select('name code').sort({ createdAt: -1 });
 
 			if (!collabs.length) return res.json({
 				status: 400,
@@ -326,7 +285,7 @@ const userCtrl = {
 		try {
 			const user = await User.findById(req.user.id);
 
-			if (user.role !== 1) return res.json({
+			if (user.role === 2) return res.json({
 				status: 400,
 				success: false,
 				content: "No tienes permitido acceder a esta ruta"
@@ -340,7 +299,7 @@ const userCtrl = {
 				content: 'No ha seleccionado un colaborador para eliminar'
 			});
 
-			await User.findOneAndUpdate({ _id: id, role: 2 }, { state: 2 });
+			await User.findByIdAndDelete(id);
 
 			return res.json({
 				status: 200,
@@ -359,10 +318,10 @@ const userCtrl = {
 	},
 	getInfo: async (req, res) => {
 		try {
-			const user = await User.findById(req.user.id).select("name role state -_id");
-			if (!user) return res.status(400).json({
-				status: 200,
-				success: true,
+			const user = await User.findById(req.user.id).select("name role -_id");
+			if (!user) return res.json({
+				status: 400,
+				success: false,
 				content: "El usuario no existe"
 			});
 

@@ -9,8 +9,7 @@ function NewsAPI(token) {
 			const { data: { status, success, content } } = await axios.get('/api/news', {
 				headers: { Authorization: token }
 			});
-
-			console.log(content);
+			
 			setNews(news => [...(success ? content : [])]);
 		} catch (err) {
 			console.log(err.response.data.content);

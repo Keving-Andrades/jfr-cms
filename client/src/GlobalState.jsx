@@ -18,6 +18,7 @@ export const DataProvider = ({ children }) => {
 		try {
 			const res = await axios.get('/user/df12_84dawDA155WD78wsda');
 			const { data: { content: accessToken, success } } = res;
+
 			if (success) setToken(accessToken);
 		} catch (err) {
 			const { response: { data: { content: msg } } } = err;

@@ -12,21 +12,22 @@ function UserAPI(token, setLoading, setLogged) {
 				headers: { Authorization: token }
 			});
 			const { success, content } = data;
-			if (success) {
-				if (content.state === 2) {
-					await axios.get('/user/logout', {
-						headers: { Authorization: token }
-					});
-					localStorage.clear();
-					window.location.href = '/login';
-				};
 
+			if (success) {
 				setIsLogged(true);
 				if (content.role !== 2) setIsAdmin(true);
 				setLoading(false);
 				setLogged(true);
 
-				if (content.role === 1) getCollabs();
+				if (content.role !== 2) getCollabs();
+			};
+
+			if (!success && content === 'El usuario no existe') {
+				await axios.get('/user/logout', {
+					headers: { Authorization: token }
+				});
+				localStorage.clear();
+				window.location.href = '/login';
 			};
 		} catch (err) {
 			console.log(err);

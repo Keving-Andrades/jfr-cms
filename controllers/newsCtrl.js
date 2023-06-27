@@ -45,7 +45,7 @@ const newsCtrl = {
 			const user = await User.findById(req.user.id);
 			const { role, _id } = user;
 
-			const news = await News.find(role !== 2 ? undefined : { code: user.code } ).select("-updatedAt -__v");
+			const news = await News.find(role !== 2 ? undefined : { code: user.code } ).select("-updatedAt -__v").sort({ createdAt: -1 });
 
 			if (news.length < 1) return res.json({
 				status: 400,

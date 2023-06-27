@@ -101,6 +101,15 @@ p {
 	background: var(--yellow);
 }
 
+.ql-editor *:not(a) {
+    user-select: text;
+}
+
+.ql-editor a {
+	font-weight: 500;
+	color: var(--blue);
+}
+
 #root {
 	display: flex;
 	flex-direction: column;
