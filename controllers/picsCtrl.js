@@ -52,9 +52,9 @@ const uploadStreamAsync = buffer => {
 const picsCtrl = {
 	getPics: async (req, res) => {
 		try {
-			const { role } = await User.findById(req.user.id);
-
-			const pics = await Pic.find(role === 1 ? undefined : { by: req.user.id } ).select('-updatedAt -__v');
+			const user = await User.findById(req.user.id);
+			const { role } = user;
+			const pics = await Pic.find(role === 1 ? undefined : { code: user.code } ).select('-updatedAt -__v');
 
 			if (pics.length < 1) {
 				const error = {
@@ -164,13 +164,21 @@ const picsCtrl = {
 			const { public_id, by } = pic;
 			const user = await User.findById(req.user.id);
 
-			if (user.role === 2 && !by._id.equals(user._id)) return res.json({
+			if (user.role === 2 && pic.code !== user.code) return res.json({
 				status: 400,
 				success: false,
 				content: "No tienes permitido eliminar esta foto."
 			});
 				
 			if (pic.post && pic.post.id) {
+				const post = await News.findById(pic.post.id);
+
+				if (user.role === 2 && post.featured) return res.json({
+					status: 400,
+					success: false,
+					content: "No tienes permitido eliminar esta foto porque pertenece a una publicación destacada."
+				});
+
 				await News.findByIdAndDelete(pic.post.id);
 				await Pic.findByIdAndDelete(id);
 
@@ -196,12 +204,6 @@ const picsCtrl = {
 
 				await cloudinary.v2.uploader.destroy(public_id, async (err, result) => {
 					if (err) throw err;
-
-					// if (result.result !== "ok") return res.json({
-					// 	status: 400,
-					// 	success: false,
-					// 	content: result.result
-					// });
 				});
 				
 				return res.json({

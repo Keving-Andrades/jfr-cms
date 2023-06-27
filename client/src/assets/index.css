@@ -254,6 +254,43 @@ main > .bg-block.confirmModal {
 	z-index: 9999;
 }
 
+main.home > .home__container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: calc(90vh - var(--header-height));
+	/* gap: 2vw; */
+}
+
+main.home > .home__container > h2 {
+	font-size: 4vw;
+	font-weight: 900;
+	color: var(--dark-grey);
+}
+
+main.home > .home__container > div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+main.home > .home__container > div > h3 {
+	font-size: 7vw;
+	font-weight: 900;
+	text-align: center;
+	color: var(--dark-grey);
+}
+
+main.home > .home__container > div > span {
+	font-family: monospace;
+	font-size: 2vw;
+	font-weight: 500;
+	color: var(--dark-grey);
+}
+
 main.login {
 	height: calc(100vh - var(--header-height));
 }

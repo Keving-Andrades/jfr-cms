@@ -27,6 +27,9 @@ const newsSchema = new Schema({
 		type: Object,
 		required: true
 	},
+	code: {
+		type: String
+	},
 	featured: {
 		type: Boolean,
 		default: false

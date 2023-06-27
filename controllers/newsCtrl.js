@@ -42,14 +42,15 @@ const bodyEmpty = value => value.replace(/<(.|\n)*?>/g, '').trim().length === 0 
 const newsCtrl = {
 	getNews: async (req, res) => {
 		try {
-			const { role, _id } = await User.findById(req.user.id);
+			const user = await User.findById(req.user.id);
+			const { role, _id } = user;
 
-			const news = await News.find(role === 1 ? undefined : { by: _id } ).select("-updatedAt -__v");
+			const news = await News.find(role === 1 ? undefined : { code: user.code } ).select("-updatedAt -__v");
 
 			if (news.length < 1) return res.json({
 				status: 400,
 				success: false,
-				content: "Aun no hay noticias disponibles."
+				content: "Aun no hay publicaciones disponibles."
 			});
 
 			return res.json({
@@ -154,7 +155,8 @@ const newsCtrl = {
 					body,
 					category,
 					image: pic._id,
-					by
+					by,
+					code: user.code
 				});
 	
 				const uploadedNews = await newNews.save();
@@ -186,7 +188,7 @@ const newsCtrl = {
 			if (!id) return res.json({
 				status: 400,
 				success: false,
-				content: 'No se han seleccionado noticias para eliminar.'
+				content: 'No se han seleccionado publicaciones para eliminar.'
 			});
 
 			const news = await News.findById(id);
@@ -194,36 +196,64 @@ const newsCtrl = {
 			if (!news) return res.json({
 				status: 400,
 				success: false,
-				content: 'No se han seleccionado noticias para eliminar.'
+				content: 'No se han seleccionado publicaciones para eliminar.'
 			});
 
 			const user = await User.findById(req.user.id);
 
-			if (user.role === 2 && !news.by._id.equals(user._id)) return res.json({
+			if (user.role === 2 && news.code !== user.code || user.role === 2 && news.featured) return res.json({
 				status: 400,
 				success: false,
-				content: "No tienes permitido eliminar esta noticia."
+				content: "No tienes permitido eliminar esta publicación."
 			});
-	
-			await cloudinary.v2.uploader.destroy(news.image.public_id, async (err, result) => {
-				if (err) throw err;
 
-				if (result.result !== "ok") return res.json({
-					status: 400,
-					success: false,
-					content: result.result
+			if (news.featured) {
+				await cloudinary.v2.uploader.destroy(news.image.public_id, async (err, result) => {
+					if (err) throw err;
+
+					if (result.result !== "ok") return res.json({
+						status: 400,
+						success: false,
+						content: result.result
+					});
+
+					await Pic.findByIdAndDelete(news.image._id);
 				});
 
-				await Pic.findByIdAndDelete(news.image._id);
-			});
-			
-			await News.findByIdAndDelete(id);
+				await News.findByIdAndDelete(id);
 
-			return res.json({
-				status: 200,
-				success: true,
-				content: "Noticia eliminada exitosamente."
-			});
+				const posts = await News.find().sort({ createdAt: -1 });
+
+				await News.findByIdAndUpdate(posts[0]._id, { featured: true });
+
+				return res.json({
+					status: 200,
+					success: true,
+					content: "Publicación eliminada exitosamente."
+				});
+			};
+
+			if (!news.featured) {
+				await cloudinary.v2.uploader.destroy(news.image.public_id, async (err, result) => {
+					if (err) throw err;
+
+					if (result.result !== "ok") return res.json({
+						status: 400,
+						success: false,
+						content: result.result
+					});
+
+					await Pic.findByIdAndDelete(news.image._id);
+				});
+
+				await News.findByIdAndDelete(id);
+
+				return res.json({
+					status: 200,
+					success: true,
+					content: "Publicación eliminada exitosamente."
+				});
+			};
 		} catch (err) {
 			const { message } = err;
 			const error = {
@@ -243,7 +273,7 @@ const newsCtrl = {
 			if (!id) return res.json({
 				status: 400,
 				success: false,
-				content: 'No se han seleccionado noticias para actualizar.'
+				content: 'No se han seleccionado publicaciones para actualizar.'
 			});
 
 			const news = await News.findById(id);
@@ -251,16 +281,16 @@ const newsCtrl = {
 			if (!news) return res.json({
 				status: 400,
 				success: false,
-				content: 'No se han seleccionado noticias para actualizar.'
+				content: 'No se han seleccionado publicaciones para actualizar.'
 			});
 
 			const user = await User.findById(req.user.id);
 			const fields = req.body;
 
-			if (user.role === 2 && !news.by._id.equals(user._id)) return res.json({
+			if (user.role === 2 && news.code !== user.code) return res.json({
 				status: 400,
 				success: false,
-				content: "No tienes permitido actualizar esta noticia."
+				content: "No tienes permitido actualizar esta publicación."
 			});
 
 			// Filtering inputs
@@ -431,7 +461,7 @@ const newsCtrl = {
 			if (user.role !== 1) return res.json({
 				status: 400,
 				success: false,
-				content: "No tienes permitido destacar esta noticia."
+				content: "No tienes permitido destacar esta publicación."
 			});
 
 			const { id } = req.params;
@@ -439,7 +469,7 @@ const newsCtrl = {
 			if (!id) return res.json({
 				status: 400,
 				success: false,
-				content: 'No se han seleccionado noticias para destacar.'
+				content: 'No se han seleccionado publicaciones para destacar.'
 			});
 
 			const newsToUpdate = [
@@ -465,7 +495,7 @@ const newsCtrl = {
 			return res.json({
 				status: 200,
 				success: true,
-				content: "Noticia destacada exitosamente."
+				content: "Publicación destacada exitosamente."
 			});
 		} catch (err) {
 			const { message } = err;

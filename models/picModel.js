@@ -15,6 +15,9 @@ const picSchema = new Schema({
 		type: Object,
 		required: true
 	},
+	code: {
+		type: String
+	},
 	post: {
 		type: Object
 	}
