@@ -45,7 +45,7 @@ const Modal = ({ pic, modalTools, confirmModal, delPic, getPics, getNews }) => {
 				<div className="pic__card--expanded" onClick={e => e.stopPropagation()}>
 
 					<div className="expanded__pic">
-						<img src={pic.url} alt="" />
+						<img src={pic.url} alt="" draggable={false} onContextMenu={e => e.preventDefault()} />
 					</div>
 
 					<div className="expanded__content">
@@ -259,7 +259,7 @@ const Pics = () => {
 				{
 					pics.map(pic => 
 						<div key={pic._id} className='pics__card' onClick={() => setExpanded(pic)}>
-							<img src={pic.url} alt="" />
+							<img src={pic.url} alt="" draggable={false} onContextMenu={e => e.preventDefault()} />
 						</div>
 					)
 				}
