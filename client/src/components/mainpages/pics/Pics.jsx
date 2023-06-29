@@ -192,6 +192,7 @@ const Pics = () => {
 	const { pics: picsTools, delPic, uploadPic } = picsAPI;
 	const [ news, setNews, getNews ] = newsTools;
 	const [ pics, setPics, getPics ] = picsTools;
+	const [ itemLimit, setItemLimit ] = useState(6);
 	const [ expanded, setExpanded ] = useState(false);
     const [ preview, setPreview ] = useState(false);
     const [ file, setFile ] = useState(false);
@@ -215,6 +216,8 @@ const Pics = () => {
 		setUpload({...upload, metadata});
 		setFile(e.target.files[0]);
 	};
+
+	const showMore = () => setItemLimit(value => value + (value + 6 > pics.length ? pics.length - value : 6));
 
 	useEffect(() => {
 		let fileReader, isCancel = false;
@@ -262,11 +265,21 @@ const Pics = () => {
 					<input type="file" ref = { inputFileRef } onChange={imageHandler} title='' name="file" id="file" accept='.jpg, .jpeg, .png' multiple={false} />
 				</div>
 				{
-					pics.map(pic => 
+					pics.slice(0, itemLimit).map(pic => 
 						<div key={pic._id} className='pics__card' onClick={() => setExpanded(pic)}>
 							<img src={pic.url} alt="" draggable={false} onContextMenu={e => e.preventDefault()} loading='lazy' />
 						</div>
 					)
+				}
+				{
+					pics.length > itemLimit ?
+						<div className="overlay__fade">
+							<div className='showMore' onClick={showMore}>
+								<FontAwesomeIcon icon={icon({ name: 'chevron-down', style: 'solid' })} />
+							</div>
+						</div>
+					:
+						null
 				}
 			</div>
 		</>
