@@ -112,7 +112,12 @@ const ModalUpload = ({ image, setUpload, preview, uploadPic, getPics, getNews, i
 
 		if (loading) return e.preventDefault();
 
-		const { success, content } = await uploadPic(image);
+		const imagePost = {
+			image,
+			loading
+		};
+
+		const { success, content } = await uploadPic(imagePost);
 
 		if (!success) {
 			setLoading(false);
@@ -168,7 +173,7 @@ const ModalUpload = ({ image, setUpload, preview, uploadPic, getPics, getNews, i
 								:
 									<FontAwesomeIcon icon = { icon({ name: 'upload', style: 'solid' }) } />
 							}
-							<span>Publicar</span>
+							<span>{loading ? 'Publicando' : 'Publicar'}</span>
 						</div>
 					</div>
 	
@@ -259,7 +264,7 @@ const Pics = () => {
 				{
 					pics.map(pic => 
 						<div key={pic._id} className='pics__card' onClick={() => setExpanded(pic)}>
-							<img src={pic.url} alt="" draggable={false} onContextMenu={e => e.preventDefault()} />
+							<img src={pic.url} alt="" draggable={false} onContextMenu={e => e.preventDefault()} loading='lazy' />
 						</div>
 					)
 				}

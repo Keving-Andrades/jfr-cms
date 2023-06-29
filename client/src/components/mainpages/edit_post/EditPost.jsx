@@ -61,6 +61,8 @@ const EditPost = () => {
 	};
 	
 	const handleSubmit = async e => {
+		setLoading(true);
+
 		e.preventDefault();
 
 		if (loading) return e.preventDefault();
@@ -77,13 +79,20 @@ const EditPost = () => {
 		if (updateDataContent === post.body) delete updateData["content"];
 		if (image.data === post.image.url) delete updateData["image"];
 
-		if (Object.keys(updateData).length < 2 && updateData.hasOwnProperty("_id")) return toast.error("No hay nuevos campos para actualizar");
+		if (Object.keys(updateData).length < 2 && updateData.hasOwnProperty("_id")) {
+			setLoading(false);
+			return toast.error("No hay nuevos campos para actualizar");
+		};
 
-		if (formRef.current && !formRef.current.checkValidity()) return e.preventDefault();
+		if (formRef.current && !formRef.current.checkValidity()) {
+			setLoading(false);
+			return e.preventDefault();
+		};
 
-		if (postData.content && bodyEmpty(postData.content)) return toast.error("El contenido de la publicación es obligatorio.");
-
-		setLoading(true);
+		if (postData.content && bodyEmpty(postData.content)) {
+			setLoading(false);
+			return toast.error("El contenido de la publicación es obligatorio.");
+		};
 
 		const { success, content } = await updateNews(updateData);
 
@@ -229,7 +238,7 @@ const EditPost = () => {
 					<button type='submit' className={loading || !formValidity() ? 'disabled' : ''}>
 						<span>
 							{ loading ? <Ring size={18} lineWeight={5} speed={2} color="var(--white)" /> : null }
-							Actualizar
+							{ loading ? 'Actualizando' : 'Actualizar' }
 						</span>
 					</button>
 				</div>

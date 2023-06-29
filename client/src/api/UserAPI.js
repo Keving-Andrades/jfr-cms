@@ -5,6 +5,7 @@ function UserAPI(token, setLoading, setLogged) {
 	const [ isLogged, setIsLogged ] = useState(false);
 	const [ isAdmin, setIsAdmin ] = useState(false);
 	const [ collabs, setCollabs ] = useState([]);
+	const [ user, setUser ] = useState(null);
 
 	const getUser = async token => {
 		try {
@@ -15,9 +16,10 @@ function UserAPI(token, setLoading, setLogged) {
 
 			if (success) {
 				setIsLogged(true);
+				setLogged(true);
+				setUser(content);
 				if (content.role !== 2) setIsAdmin(true);
 				setLoading(false);
-				setLogged(true);
 
 				if (content.role !== 2) getCollabs();
 			};
@@ -90,6 +92,7 @@ function UserAPI(token, setLoading, setLogged) {
 	}, [token]);
 
 	return {
+		user: [ user, setUser ],
 		isLogged: [ isLogged, setIsLogged ],
 		isAdmin: [ isAdmin, setIsAdmin ],
 		collabs: {

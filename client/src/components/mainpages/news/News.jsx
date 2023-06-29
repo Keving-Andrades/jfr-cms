@@ -48,7 +48,7 @@ const News = () => {
 						})}
 					>
 						<div className="card__image">
-							<img src={news.image.url} alt={news.title} />
+							<img src={news.image.url} alt={news.title} draggable={false} onContextMenu={e => e.preventDefault()} loading='lazy' />
 						</div>
 						<div className='card__content'>
 							<div className="title">{news.title}</div>

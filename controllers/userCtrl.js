@@ -318,7 +318,7 @@ const userCtrl = {
 	},
 	getInfo: async (req, res) => {
 		try {
-			const user = await User.findById(req.user.id).select("name role -_id");
+			const user = await User.findById(req.user.id).select("name email role -_id");
 			if (!user) return res.json({
 				status: 400,
 				success: false,

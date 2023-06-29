@@ -38,18 +38,21 @@ const CreatePost = () => {
 	const formValidity = () => formRef.current && formRef.current.checkValidity() && postData.content && !bodyEmpty(postData.content);
 
 	const handleSubmit = async e => {
+		setLoading(true);
+		
 		e.preventDefault();
 
 		if (loading) return e.preventDefault();
 
-		if (formRef.current && !formRef.current.checkValidity()) return e.preventDefault();
+		if (formRef.current && !formRef.current.checkValidity()) {
+			setLoading(false);
+			return e.preventDefault();
+		};
 
 		if (!postData.content || postData.content && bodyEmpty(postData.content)) {
 			setLoading(false);
 			return toast.error("El contenido de la publicación es obligatorio.");
 		};
-
-		setLoading(true);
 
 		const { success, content } = await postNews(postData);
 
@@ -195,7 +198,7 @@ const CreatePost = () => {
 					<button type='submit' className={loading || !formValidity() ? 'disabled' : ''}>
 						<span>
 							{ loading ? <Ring size={18} lineWeight={5} speed={2} color="var(--white)" /> : null }
-							Publicar
+							{ loading ? 'Publicando' : 'Publicar' }
 						</span>
 					</button>
 				</div>

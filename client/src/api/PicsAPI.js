@@ -11,7 +11,7 @@ function PicsAPI(token) {
 			});
 			setPics(pics => [...(success ? content : [])]);
 		} catch (err) {
-			console.log(err.response.data.content);
+			// console.log(err.response.data.content);
 		};
 	};
 
@@ -27,14 +27,21 @@ function PicsAPI(token) {
 				content
 			};
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 		}
 	};
 
 	const uploadPic = async image => {
 		try {
-			const { data } = await axios.post('/api/pics', image, {
-				headers: { Authorization: token }
+			if (image.loading) return {
+				success: false,
+				content: "Ya hay una subida de imagen en progreso"
+			};
+
+			const { data } = await axios.post('/api/pics', image.image, {
+				headers: {
+					Authorization: token
+				}
 			});
 
 			const { success, content } = data;
@@ -44,7 +51,10 @@ function PicsAPI(token) {
 				content
 			};
 		} catch (err) {
-			console.log(err);
+			return {
+				success: false,
+				content: err.message
+			};
 		};
 	};
 
