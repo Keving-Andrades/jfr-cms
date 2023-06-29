@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalState } from '../../../GlobalState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,6 +36,10 @@ const News = () => {
 			toast: '¡Publicación borrada exitosamente!'
 		});
 	};
+
+	useEffect(() => {
+		getNews();
+	}, []);
 
 	return (
 		<div className='news__container'>

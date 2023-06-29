@@ -17,6 +17,10 @@ const PostDetails = () => {
 	const [ news ] = newsTools;
 
 	useEffect(() => {
+		getNews();
+	}, []);
+	
+	useEffect(() => {
 		if (!Object.keys(localState).length && params) {
 			news.forEach(news => {
 				if (news._id === params.id) setLocalState({

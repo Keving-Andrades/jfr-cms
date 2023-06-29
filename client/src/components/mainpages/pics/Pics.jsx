@@ -220,6 +220,10 @@ const Pics = () => {
 	const showMore = () => setItemLimit(value => value + (value + 6 > pics.length ? pics.length - value : 6));
 
 	useEffect(() => {
+		getPics();
+	}, []);
+
+	useEffect(() => {
 		let fileReader, isCancel = false;
 		if (file) {
 			fileReader = new FileReader();
