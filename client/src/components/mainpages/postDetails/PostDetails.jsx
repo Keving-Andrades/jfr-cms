@@ -14,7 +14,7 @@ const PostDetails = () => {
 	const state = useContext(GlobalState);
 	const { newsAPI } = state;
 	const { news: newsTools } = newsAPI;
-	const [ news ] = newsTools;
+	const [ news, setNews, getNews ] = newsTools;
 
 	useEffect(() => {
 		getNews();
