@@ -105,6 +105,11 @@ p {
 	user-select: text;
 }
 
+::-ms-reveal,
+::-ms-clear {
+	display: none;
+}
+
 ::placeholder {
 	color: var(--grey);
 	opacity: 70%;
