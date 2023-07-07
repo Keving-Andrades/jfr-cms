@@ -100,6 +100,7 @@ strong {
 }
 
 p {
+	max-width: 75ch;
 	font-weight: 400;
 	color: var(--grey);
 	user-select: text;

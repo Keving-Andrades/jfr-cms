@@ -10,7 +10,7 @@ cloudinary.config({
 	api_secret: process.env.CLOUD_API_SECRET
 });
 
-tinify.key = 'PZD5jhV31Jgx6ghWN0Zf7MxCWHJss9Ww';
+tinify.key = process.env.TINIFY_API_KEY;
 
 const supportedFormats = /image\/(png|jpg|jpeg)/i;
 
